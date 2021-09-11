@@ -7,31 +7,38 @@
                      <br>
                      <button type="submit" class="submit-btn" name="login">LogIn</button>
 </form> -->
+
 <?php
-require_once("configure.php");
+
 if(isset($_POST['login']))
 {
-    if(!empty($_POST['userid']) && !empty($_POST['password']))
+    if(!empty($_POST['username']) && !empty($_POST['password']))
     {
         $username = $_POST['username'];
         $password =$_POST['password'];
-        global $ConnectingDB;
-        $sql = "SELECT * FROM info WHERE Username='".$username."' AND Password='".$password."'  
-                limit 1";
-        $result = mysql_query($sql);
-        if(mysql_num_rows($result)==1)
-        {
-            <span>
-            echo "{$username} have logged in successfully"
-            </span>
-        }
-        else
-        {
-            <span>
-            echo "USERNAME OR PASSWORD INCORRECT"
-            </span>
-        }
+        $db = mysqli_connect('localhost','root','','login') or die("could not connect to database") ;
+         
+        $user_check_query="SELECT * FROM info WHERE Username = '$username' or Password='$password' LIMIT 1";
 
+        //running error query
+        
+        $result = mysqli_query($db,$user_check_query);
+        $user = mysqli_fetch_assoc($result);
+
+        if($user)
+        {
+            if($user['Username']==$username && $user['Password']==$password)
+            {
+                
+                echo "login successful";
+                
+
+            }
+            else
+            {
+                echo "username or password incorrect";
+            }
+        }
     }
 }
 
